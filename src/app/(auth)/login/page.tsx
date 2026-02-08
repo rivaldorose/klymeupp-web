@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 const KlymeUppLogo = () => (
   <svg
@@ -44,22 +45,40 @@ export default function LoginPage() {
         return;
       }
 
-      // TODO: Call login API
-      console.log("Login data:", formData);
+      const { error: authError } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
 
-      // Redirect to dashboard after successful login
+      if (authError) {
+        setError("E-mailadres of wachtwoord is onjuist");
+        return;
+      }
+
       router.push("/dashboard");
+      router.refresh();
     } catch (err) {
-      setError("E-mailadres of wachtwoord is onjuist");
+      setError("Er is iets misgegaan. Probeer het opnieuw.");
       console.error(err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSocialAuth = (provider: string) => {
-    // TODO: Implement social authentication
-    console.log(`Sign in with ${provider}`);
+  const handleSocialAuth = async (provider: string) => {
+    const providerMap: Record<string, "google" | "apple"> = {
+      Google: "google",
+      Apple: "apple",
+    };
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: providerMap[provider],
+      options: {
+        redirectTo: `${window.location.origin}/api/auth/callback`,
+      },
+    });
+    if (error) {
+      setError("Social login mislukt. Probeer het opnieuw.");
+    }
   };
 
   return (

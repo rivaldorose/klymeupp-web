@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 const KlymeUppLogo = () => (
   <svg
@@ -63,11 +63,29 @@ export default function RegisterPage() {
         return;
       }
 
-      // TODO: Call registration API
-      console.log("Registration data:", formData);
+      const { error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            full_name: formData.name,
+            role: formData.role,
+          },
+          emailRedirectTo: `${window.location.origin}/api/auth/callback?next=/onboarding`,
+        },
+      });
 
-      // Redirect to onboarding after successful registration
+      if (authError) {
+        if (authError.message.includes("already registered")) {
+          setError("Dit e-mailadres is al geregistreerd. Probeer in te loggen.");
+        } else {
+          setError(authError.message);
+        }
+        return;
+      }
+
       router.push("/onboarding");
+      router.refresh();
     } catch (err) {
       setError("Er is iets misgegaan. Probeer het opnieuw.");
       console.error(err);
@@ -76,9 +94,20 @@ export default function RegisterPage() {
     }
   };
 
-  const handleSocialAuth = (provider: string) => {
-    // TODO: Implement social authentication
-    console.log(`Sign up with ${provider}`);
+  const handleSocialAuth = async (provider: string) => {
+    const providerMap: Record<string, "google" | "apple"> = {
+      Google: "google",
+      Apple: "apple",
+    };
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: providerMap[provider],
+      options: {
+        redirectTo: `${window.location.origin}/api/auth/callback`,
+      },
+    });
+    if (error) {
+      setError("Social login mislukt. Probeer het opnieuw.");
+    }
   };
 
   return (
