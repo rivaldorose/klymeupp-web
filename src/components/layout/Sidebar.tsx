@@ -35,7 +35,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     <>
       {/* Desktop Sidebar */}
       <aside
-        className={`hidden md:fixed md:left-0 md:top-0 md:h-screen md:flex md:flex-col md:bg-background-light md:border-r md:border-border-light md:transition-all md:duration-300 ${
+        className={`hidden md:fixed md:left-0 md:top-0 md:h-screen md:z-50 md:flex md:flex-col md:bg-background-light md:border-r md:border-border-light md:transition-all md:duration-300 ${
           isCollapsed ? "md:w-20" : "md:w-72"
         } dark:md:bg-background-dark dark:md:border-border-dark`}
       >

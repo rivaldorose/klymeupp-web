@@ -26,7 +26,7 @@ export default function DashboardLayout({
 
       {/* Main Content */}
       <div
-        className={`flex-1 flex flex-col w-full overflow-hidden transition-all duration-300 ${
+        className={`flex-1 flex flex-col min-w-0 overflow-hidden transition-all duration-300 ${
           isCollapsed ? "md:ml-20" : "md:ml-72"
         }`}
       >
