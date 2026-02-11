@@ -1,424 +1,304 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { Card, CardContent, CardHeader } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-
-// ============================================================================
-// TYPES
-// ============================================================================
-
-type OpportunityType = "stage" | "baan" | "freelance";
-type LocationFilter = "all" | "amsterdam" | "rotterdam" | "groningen" | "remote";
-type SectorFilter = "all" | "tech" | "finance" | "healthcare" | "education" | "marketing";
-
-interface Opportunity {
-  id: string;
-  company: string;
-  role: string;
-  location: string;
-  type: OpportunityType;
-  matchPercentage: number;
-  requiredSkills: string[];
-  description: string;
-  logo?: string;
-}
 
 // ============================================================================
 // MOCK DATA
 // ============================================================================
 
-const MOCK_OPPORTUNITIES: Opportunity[] = [
+const MOCK_OPPORTUNITIES = [
   {
-    id: "opp-1",
-    company: "TechVision",
-    role: "Junior UX Designer",
-    location: "Amsterdam",
-    type: "baan",
-    matchPercentage: 92,
-    requiredSkills: ["UI/UX", "Figma", "Communication"],
-    description: "Looking for a talented designer to join our team",
+    id: "1",
+    company: "Stripe",
+    role: "Junior UX Researcher",
+    location: "Remote (Global)",
+    type: "Full-time",
+    salary: "$45k - $60k",
+    tags: ["Full-time", "$45k - $60k", "Design Sprint"],
+    matchPercentage: 98,
+    matchColor: "bg-primary/10 text-primary",
+    posted: "Posted 2h ago",
+    logo: "https://lh3.googleusercontent.com/aida-public/AB6AXuCGp34P9tTDq7V6_cRcwV4SqkR5yS-ZumkIY2mjDywAVSgpqXYGx2xUm8LLxE0WFVa-J7pYJ2plU6AB4hDIluw6fSidOWkMYWL-Pez_AWF-Np0nvHGbsSGLiXRTtetPb4Deheh47Zux2Xot9o6ve32aZSiTL6cWzvTyJDdU3E_oGp0FXUStCaQhfx2qFrMtdB1aowAgWCFeu_1cTJPqiDtD7e9Q-9Kq5HXvw5LfRy5ftvLMErELTDuFXtaJ50bzqpIqqQjAsulfC6I",
   },
   {
-    id: "opp-2",
-    company: "GreenStart",
-    role: "Marketing Stagiair",
-    location: "Rotterdam",
-    type: "stage",
-    matchPercentage: 87,
-    requiredSkills: ["Marketing", "Social Media", "Analytics"],
-    description: "Help us grow our digital presence and brand awareness",
-  },
-  {
-    id: "opp-3",
-    company: "DataFlow",
-    role: "Business Analyst",
-    location: "Amsterdam",
-    type: "freelance",
-    matchPercentage: 78,
-    requiredSkills: ["Analysis", "Problem Solving", "Data"],
-    description: "Short-term project analyzing customer behavior patterns",
-  },
-  {
-    id: "opp-4",
-    company: "CloudForce",
-    role: "Project Coordinator",
-    location: "Remote",
-    type: "baan",
+    id: "2",
+    company: "Spotify",
+    role: "Growth Marketing Intern",
+    location: "New York, NY",
+    type: "Internship",
+    salary: "Paid",
+    tags: ["Internship", "Paid", "Content Creation"],
     matchPercentage: 85,
-    requiredSkills: ["Organization", "Leadership", "Communication"],
-    description: "Lead cross-functional teams to deliver projects on time",
+    matchColor: "bg-emerald-100 text-emerald-600",
+    posted: "Hot Pick 🔥",
+    logo: "https://lh3.googleusercontent.com/aida-public/AB6AXuDDj6Ex1HFM5MnmOHgvOEr_rEhMXJge1mWUZELTxN75qXxEUuYvwP45vgpFTyX9x-aBY7c59BwNNx8IMhvhBRRz9SNIVdedRuzLlRrUg98_BAKKaz5PcFmLvQ4X5aeu10P2hCyu4qgPVuy3lekh-Udfjay5yI3rxMDaAqDJx_oUTlftJ8RvFLBaB_r-QazGPDxDrdL4GIMfGcYFA4y4R4XIUD3yRDsVMLitB5j8DPYWtroU-iZ_nT09tyMxR43sLDP3MGY3P0oGGbY",
   },
   {
-    id: "opp-5",
-    company: "InnovateLab",
-    role: "Content Creator",
-    location: "Groningen",
-    type: "stage",
-    matchPercentage: 81,
-    requiredSkills: ["Writing", "Communication", "Creativity"],
-    description: "Create engaging content for our digital platforms",
+    id: "3",
+    company: "Discord",
+    role: "Community Manager",
+    location: "San Francisco, CA",
+    type: "Contract",
+    salary: "$30/hr",
+    tags: ["Contract", "$30/hr", "Soft Skills"],
+    matchPercentage: 92,
+    matchColor: "bg-primary/10 text-primary",
+    posted: "New Today",
+    logo: "https://lh3.googleusercontent.com/aida-public/AB6AXuB4fO_gUwSmgv26xYTE-Oj-NJoppDQtke8bGYlKiHVOhW92sR9CRGgwVbIXuY5682IK68foMcSnfBBjznLT224fbyN7_X7rhUgYErw-UOmH2xAw2KgL1WaNDc3Z010QoW-NMppicXEYp1Sd-lQN6CYqCPQA_p76K5lPqoi0ADVD4uyzcbexheJ5FBSqoRdN1qm0qHznFSWRx6233zrzXIM-XEVk1cj-C5pcL-dJeTeatip77Cgpg2h4i5tZwIl0HGKa2qDrG1Oqoew",
+  },
+  {
+    id: "4",
+    company: "Patagonia",
+    role: "Sustainability Analyst",
+    location: "Ventura, CA",
+    type: "Entry Level",
+    salary: "$50k+",
+    tags: ["Entry Level", "$50k+", "Leadership"],
+    matchPercentage: 78,
+    matchColor: "bg-blue-100 text-blue-600",
+    posted: "Ending soon",
+    logo: "https://lh3.googleusercontent.com/aida-public/AB6AXuCpNAGaW-GwyTNuH_lmorak5p5cm1q_MiXxk_4xyzkNqEHLtpIwOKa1UfWt6aNdc-383hTnznwR9eynRLA1E8CMsarVPYHPAYhLYa8EySEsid6fgqebxw4G02kVnnjRGW6b35OsXM07k2IOTUa39vzzQAB72FrLSD_C4bTsSmMnkbYaZ33lSGqgV_fv7urC-8A-iOZ9DWjXi9VSV6zxTKdkuVOYmIpwnYMRfHQGnm-jikVqIpixOmz_hPcrkJD0vl4tAhDKST336KE",
   },
 ];
 
-// ============================================================================
-// COMPONENTS
-// ============================================================================
+const INDUSTRIES = [
+  { label: "Tech & AI", checked: true },
+  { label: "Creative Design", checked: false },
+  { label: "Sustainable Energy", checked: true },
+  { label: "Marketing", checked: false },
+];
 
-/**
- * Match percentage circle
- */
-const MatchCircle: React.FC<{ percentage: number }> = ({ percentage }) => {
-  const color = percentage >= 85 ? "success" : percentage >= 70 ? "primary" : "warning";
-  const colorMap = {
-    success: "text-success",
-    primary: "text-primary",
-    warning: "text-warning",
-  };
-
-  return (
-    <div className={cn("relative w-20 h-20 flex items-center justify-center")}>
-      <svg className="absolute w-full h-full" viewBox="0 0 100 100">
-        <circle
-          cx="50"
-          cy="50"
-          r="45"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          className="text-bg-light dark:text-[#3d2a35]"
-        />
-        <motion.circle
-          cx="50"
-          cy="50"
-          r="45"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeDasharray={`${(percentage / 100) * 2 * Math.PI * 45} ${2 * Math.PI * 45}`}
-          initial={{ strokeDashoffset: 2 * Math.PI * 45 }}
-          animate={{ strokeDashoffset: 0 }}
-          transition={{ duration: 0.8 }}
-          strokeLinecap="round"
-          className={cn("transition-colors", colorMap[color])}
-        />
-      </svg>
-      <span className={cn("text-lg font-display font-bold", colorMap[color])}>
-        {percentage}%
-      </span>
-    </div>
-  );
-};
-
-/**
- * Opportunity card
- */
-const OpportunityCard: React.FC<{ opportunity: Opportunity; index: number }> = ({
-  opportunity,
-  index,
-}) => {
-  const typeMap = {
-    stage: { label: "Stage", color: "bg-soft-blue/10 text-soft-blue" },
-    baan: { label: "Baan", color: "bg-success/10 text-success" },
-    freelance: { label: "Freelance", color: "bg-primary/10 text-primary" },
-  };
-
-  const typeConfig = typeMap[opportunity.type];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-    >
-      <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-        <CardHeader className="pb-0">
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-primary/50 flex items-center justify-center text-white font-bold">
-                  {opportunity.company.charAt(0)}
-                </div>
-                <div>
-                  <p className="text-xs text-txt-secondary font-sans">
-                    {opportunity.company}
-                  </p>
-                  <h3 className="font-display font-bold text-txt">
-                    {opportunity.role}
-                  </h3>
-                </div>
-              </div>
-            </div>
-            <span
-              className={cn(
-                "px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap",
-                typeConfig.color
-              )}
-            >
-              {typeConfig.label}
-            </span>
-          </div>
-        </CardHeader>
-
-        <CardContent className="pb-4">
-          <div className="flex items-center gap-2 mb-4 text-sm text-txt-secondary">
-            <span className="material-symbols-outlined text-lg">location_on</span>
-            <span>{opportunity.location}</span>
-          </div>
-
-          <div className="mb-4">
-            <p className="text-xs font-sans text-txt-secondary mb-3 font-semibold uppercase">
-              Vereiste Vaardigheden
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {opportunity.requiredSkills.map((skill) => (
-                <span
-                  key={skill}
-                  className="inline-block px-2 py-1 bg-bg-light dark:bg-[#3d2a35] text-txt text-xs font-sans rounded"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 items-center gap-4 pt-4 border-t border-border-light">
-            <div>
-              <p className="text-xs text-txt-secondary font-sans mb-2">Match %</p>
-              <MatchCircle percentage={opportunity.matchPercentage} />
-            </div>
-            <Button variant="primary" size="sm" className="h-12 w-full">
-              Bekijk
-              <span className="material-symbols-outlined ml-1 text-sm">
-                arrow_outward
-              </span>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
-};
+const SKILL_TAGS = ["Technical", "Soft Skills", "Leadership", "Problem Solving"];
 
 // ============================================================================
 // MAIN PAGE
 // ============================================================================
 
 export default function MatchingPage() {
-  const [typeFilter, setTypeFilter] = useState<OpportunityType | "all">("all");
-  const [locationFilter, setLocationFilter] = useState<LocationFilter>("all");
-  const [sectorFilter, setSectorFilter] = useState<SectorFilter>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeSkill, setActiveSkill] = useState("Technical");
+  const [checkedIndustries, setCheckedIndustries] = useState<Record<string, boolean>>(
+    Object.fromEntries(INDUSTRIES.map((i) => [i.label, i.checked]))
+  );
 
-  const filteredOpportunities = MOCK_OPPORTUNITIES.filter((opp) => {
-    if (typeFilter !== "all" && opp.type !== typeFilter) return false;
-    return true;
-  });
-
-  const stats = {
-    total: MOCK_OPPORTUNITIES.length,
-    average: Math.round(
-      MOCK_OPPORTUNITIES.reduce((sum, opp) => sum + opp.matchPercentage, 0) /
-        MOCK_OPPORTUNITIES.length
-    ),
+  const toggleIndustry = (label: string) => {
+    setCheckedIndustries((prev) => ({ ...prev, [label]: !prev[label] }));
   };
 
   return (
-    <div className="w-full space-y-8">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h1 className="text-4xl md:text-5xl font-display font-bold text-txt mb-2">
-          Jouw Matches
-        </h1>
-        <p className="text-txt-secondary font-sans text-lg">
-          Ontdek kansen die perfect voor jou zijn
-        </p>
-      </motion.div>
+    <div className="w-full flex gap-8">
+      {/* Sidebar Filters - Desktop Only */}
+      <aside className="w-72 flex-shrink-0 hidden lg:flex flex-col gap-8">
+        {/* Filters Card */}
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-bold text-lg">Filters</h3>
+            <button className="text-primary text-xs font-bold hover:underline">
+              Clear All
+            </button>
+          </div>
 
-      {/* Stats Cards */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        className="grid grid-cols-2 md:grid-cols-4 gap-4"
-      >
-        <Card className="p-6">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-lg bg-primary/10 text-primary">
-              <span className="material-symbols-outlined text-2xl fill-1">
-                inbox
+          {/* Industry Filter */}
+          <div className="mb-8">
+            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">
+              Industry
+            </h4>
+            <div className="flex flex-col gap-3">
+              {INDUSTRIES.map((industry) => (
+                <label
+                  key={industry.label}
+                  className="flex items-center gap-3 cursor-pointer group"
+                >
+                  <input
+                    type="checkbox"
+                    checked={checkedIndustries[industry.label]}
+                    onChange={() => toggleIndustry(industry.label)}
+                    className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary/20"
+                  />
+                  <span className="text-sm font-medium text-gray-700 group-hover:text-primary transition-colors">
+                    {industry.label}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Skill Focus */}
+          <div className="mb-8">
+            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">
+              Skill Focus
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {SKILL_TAGS.map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => setActiveSkill(tag)}
+                  className={`px-4 py-2 rounded-full text-xs font-bold border transition-colors ${
+                    activeSkill === tag
+                      ? "bg-primary/10 text-primary border-primary/20"
+                      : "bg-gray-50 text-gray-600 border-transparent hover:border-primary/20"
+                  }`}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Location */}
+          <div>
+            <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">
+              Location
+            </h4>
+            <div className="relative">
+              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+                location_on
               </span>
-            </div>
-            <div>
-              <p className="text-xs text-txt-secondary uppercase font-sans">
-                Beschikbare kansen
-              </p>
-              <p className="text-2xl font-display font-bold text-txt">
-                {stats.total}
-              </p>
+              <input
+                type="text"
+                placeholder="City or Remote"
+                className="w-full bg-gray-50 border-none rounded-xl py-2.5 pl-10 text-sm focus:ring-2 focus:ring-primary/30"
+              />
             </div>
           </div>
-        </Card>
-        <Card className="p-6">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-lg bg-success/10 text-success">
-              <span className="material-symbols-outlined text-2xl fill-1">
-                check_circle
-              </span>
-            </div>
-            <div>
-              <p className="text-xs text-txt-secondary uppercase font-sans">
-                Gem. Match %
-              </p>
-              <p className="text-2xl font-display font-bold text-txt">
-                {stats.average}%
-              </p>
-            </div>
-          </div>
-        </Card>
-      </motion.div>
+        </div>
 
-      {/* Filters */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-4"
-      >
-        {/* Type Filter */}
-        <Card className="p-4">
-          <p className="text-xs font-sans font-semibold text-txt-secondary mb-3 uppercase">
-            Type
-          </p>
-          <div className="space-y-2">
-            {["all", "stage", "baan", "freelance"].map((type) => (
-              <button
-                key={type}
-                onClick={() => setTypeFilter(type as any)}
-                className={cn(
-                  "w-full text-left px-3 py-2 rounded-lg transition-colors text-sm font-sans",
-                  typeFilter === type
-                    ? "bg-primary text-white"
-                    : "hover:bg-bg-light text-txt"
-                )}
-              >
-                {type === "all" ? "Alles" : type.charAt(0).toUpperCase() + type.slice(1)}
-              </button>
-            ))}
-          </div>
-        </Card>
-
-        {/* Location Filter */}
-        <Card className="p-4">
-          <p className="text-xs font-sans font-semibold text-txt-secondary mb-3 uppercase">
-            Locatie
-          </p>
-          <div className="space-y-2">
-            {[
-              { value: "all" as LocationFilter, label: "Alles" },
-              { value: "amsterdam" as LocationFilter, label: "Amsterdam" },
-              { value: "rotterdam" as LocationFilter, label: "Rotterdam" },
-              { value: "groningen" as LocationFilter, label: "Groningen" },
-              { value: "remote" as LocationFilter, label: "Remote" },
-            ].map(({ value, label }) => (
-              <button
-                key={value}
-                onClick={() => setLocationFilter(value)}
-                className={cn(
-                  "w-full text-left px-3 py-2 rounded-lg transition-colors text-sm font-sans",
-                  locationFilter === value
-                    ? "bg-primary text-white"
-                    : "hover:bg-bg-light text-txt"
-                )}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </Card>
-
-        {/* Sector Filter */}
-        <Card className="p-4">
-          <p className="text-xs font-sans font-semibold text-txt-secondary mb-3 uppercase">
-            Sector
-          </p>
-          <div className="space-y-2">
-            {[
-              { value: "all" as SectorFilter, label: "Alles" },
-              { value: "tech" as SectorFilter, label: "Technologie" },
-              { value: "finance" as SectorFilter, label: "Finance" },
-              { value: "healthcare" as SectorFilter, label: "Gezondheidszorg" },
-              { value: "education" as SectorFilter, label: "Onderwijs" },
-            ].map(({ value, label }) => (
-              <button
-                key={value}
-                onClick={() => setSectorFilter(value)}
-                className={cn(
-                  "w-full text-left px-3 py-2 rounded-lg transition-colors text-sm font-sans",
-                  sectorFilter === value
-                    ? "bg-primary text-white"
-                    : "hover:bg-bg-light text-txt"
-                )}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </Card>
-      </motion.div>
-
-      {/* Opportunities Grid */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className="grid grid-cols-1 md:grid-cols-2 gap-6"
-      >
-        {filteredOpportunities.map((opp, i) => (
-          <OpportunityCard key={opp.id} opportunity={opp} index={i} />
-        ))}
-      </motion.div>
-
-      {filteredOpportunities.length === 0 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="text-center py-12"
-        >
-          <span className="material-symbols-outlined text-6xl text-txt-secondary mb-4 block">
-            search_off
+        {/* Gamification Promo Card */}
+        <div className="bg-gradient-to-br from-primary to-[#ff6fb1] p-6 rounded-2xl text-white relative overflow-hidden">
+          <span className="material-symbols-outlined absolute -right-4 -bottom-4 text-white/20 text-8xl rotate-12">
+            emoji_events
           </span>
-          <p className="text-txt-secondary font-sans text-lg">
-            Geen opportuniteiten gevonden met de geselecteerde filters
+          <h4 className="font-bold text-lg mb-2 relative z-10">
+            Level Up Your Profile!
+          </h4>
+          <p className="text-white/80 text-sm mb-4 relative z-10">
+            Complete your skills test to unlock high-match opportunities.
           </p>
-        </motion.div>
-      )}
+          <button className="w-full bg-white text-primary py-2.5 rounded-full font-bold text-sm shadow-lg relative z-10 active:scale-95 transition-transform">
+            Start Challenge
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <section className="flex-1 min-w-0">
+        {/* Header */}
+        <div className="flex flex-col gap-6 mb-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-extrabold tracking-tight mb-2">
+                Opportunity Hub
+              </h1>
+              <p className="text-gray-500 font-medium">
+                Discover careers that match your unique talent profile.
+              </p>
+            </div>
+            <div className="flex gap-2 items-center">
+              <div className="flex -space-x-3">
+                <div className="size-8 rounded-full bg-primary/20 border-2 border-white" />
+                <div className="size-8 rounded-full bg-emerald-200 border-2 border-white" />
+                <div className="size-8 rounded-full bg-blue-200 border-2 border-white" />
+              </div>
+              <span className="text-xs font-bold text-gray-400 ml-2">
+                42 friends active
+              </span>
+            </div>
+          </div>
+
+          {/* Search Bar */}
+          <div className="relative group">
+            <span className="material-symbols-outlined absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors">
+              search
+            </span>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search for internships, junior roles, or side hustles..."
+              className="w-full bg-white border-none rounded-full py-5 pl-16 pr-40 text-base shadow-sm focus:ring-4 focus:ring-primary/10 transition-all"
+            />
+            <button className="absolute right-3 top-1/2 -translate-y-1/2 bg-primary text-white px-8 py-3 rounded-full font-bold text-sm hover:brightness-110 shadow-lg shadow-primary/20 transition-all">
+              Find Path
+            </button>
+          </div>
+        </div>
+
+        {/* Opportunity Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {MOCK_OPPORTUNITIES.map((opp) => (
+            <div
+              key={opp.id}
+              className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 transition-all"
+            >
+              {/* Card Header */}
+              <div className="flex justify-between items-start mb-5">
+                <div className="size-14 bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={opp.logo}
+                    alt={opp.company}
+                    className="w-10 h-10 object-contain"
+                  />
+                </div>
+                <div className="flex flex-col items-end gap-2">
+                  <span
+                    className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 ${opp.matchColor}`}
+                  >
+                    <span
+                      className="material-symbols-outlined text-sm"
+                      style={{ fontVariationSettings: "'FILL' 1" }}
+                    >
+                      stars
+                    </span>
+                    {opp.matchPercentage}% Talent Match
+                  </span>
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    {opp.posted}
+                  </span>
+                </div>
+              </div>
+
+              {/* Card Body */}
+              <h3 className="text-xl font-bold mb-1">{opp.role}</h3>
+              <p className="text-gray-500 font-semibold mb-4 text-sm">
+                {opp.company} • {opp.location}
+              </p>
+
+              {/* Tags */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                {opp.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="px-3 py-1 bg-gray-50 text-gray-600 rounded-lg text-xs font-medium"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center gap-3">
+                <button className="flex-1 bg-primary text-white py-3 rounded-full font-bold text-sm hover:shadow-lg hover:shadow-primary/30 transition-all active:scale-95">
+                  Quick Apply
+                </button>
+                <button className="size-11 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:text-primary transition-colors">
+                  <span className="material-symbols-outlined">bookmark</span>
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Load More */}
+        <div className="mt-12 flex flex-col items-center gap-4">
+          <p className="text-gray-400 text-sm font-medium">
+            Showing 4 of 128 matching adventures
+          </p>
+          <button className="px-10 py-4 rounded-full bg-white border-2 border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all">
+            Load More Opportunities
+          </button>
+        </div>
+      </section>
     </div>
   );
 }
