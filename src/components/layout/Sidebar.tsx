@@ -68,8 +68,8 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                     href={item.href}
                     className={`flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-200 ${
                       active
-                        ? "bg-primary bg-opacity-10 border-l-4 border-primary text-primary dark:bg-primary dark:bg-opacity-20"
-                        : "text-text-secondary hover:bg-surface-muted dark:text-text-muted dark:hover:bg-surface-dark"
+                        ? "bg-primary text-white font-semibold shadow-md"
+                        : "text-text-secondary hover:bg-surface-muted"
                     }`}
                   >
                     <span className="material-symbols-outlined text-xl flex-shrink-0">
