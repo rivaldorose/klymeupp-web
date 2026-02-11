@@ -45,7 +45,7 @@ export default function LoginPage() {
         return;
       }
 
-      const { error: authError } = await supabase.auth.signInWithPassword({
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       });
@@ -55,7 +55,18 @@ export default function LoginPage() {
         return;
       }
 
-      router.push("/dashboard");
+      // Check onboarding status to redirect to the right page
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("onboarding_completed")
+        .eq("id", data.user.id)
+        .single();
+
+      if (profile?.onboarding_completed) {
+        router.push("/dashboard");
+      } else {
+        router.push("/onboarding");
+      }
       router.refresh();
     } catch (err) {
       setError("Er is iets misgegaan. Probeer het opnieuw.");

@@ -12,7 +12,7 @@ export default function TopBar({ pageTitle, xp = 2450, streak = 7 }: TopBarProps
   const [notificationCount, setNotificationCount] = useState(3);
 
   return (
-    <header className="sticky top-0 z-40 bg-surface-light bg-opacity-95 backdrop-blur supports-[backdrop-filter]:bg-opacity-80 border-b border-border-light dark:bg-surface-dark dark:border-border-dark md:ml-72 transition-all duration-300">
+    <header className="sticky top-0 z-40 bg-surface-light bg-opacity-95 backdrop-blur supports-[backdrop-filter]:bg-opacity-80 border-b border-border-light dark:bg-surface-dark dark:border-border-dark transition-all duration-300">
       <div className="flex items-center justify-between px-4 md:px-8 py-4 gap-4">
         {/* Left: Page Title */}
         <div className="flex-1 min-w-0">

@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 
 interface NavItem {
   label: string;
@@ -20,9 +19,13 @@ const navigationItems: NavItem[] = [
   { label: "Welzijn", href: "/wellbeing", icon: "favorite" },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  isCollapsed: boolean;
+  setIsCollapsed: (collapsed: boolean) => void;
+}
+
+export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const pathname = usePathname();
-  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const isActive = (href: string) => {
     return pathname.startsWith(href);

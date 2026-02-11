@@ -55,7 +55,15 @@ export default function OnboardingPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const handleNext = () => {
+  const markOnboardingComplete = async () => {
+    try {
+      await fetch("/api/onboarding/complete", { method: "POST" });
+    } catch (e) {
+      console.error("Failed to mark onboarding complete:", e);
+    }
+  };
+
+  const handleNext = async () => {
     if (currentSlide < slides.length - 1) {
       setIsTransitioning(true);
       setTimeout(() => {
@@ -63,7 +71,7 @@ export default function OnboardingPage() {
         setIsTransitioning(false);
       }, 300);
     } else {
-      // Go to dashboard on final slide
+      await markOnboardingComplete();
       router.push("/dashboard");
     }
   };
@@ -78,7 +86,8 @@ export default function OnboardingPage() {
     }
   };
 
-  const handleSkip = () => {
+  const handleSkip = async () => {
+    await markOnboardingComplete();
     router.push("/dashboard");
   };
 

@@ -38,8 +38,9 @@ export async function middleware(request: NextRequest) {
   const isProtectedRoute = protectedPaths.some((path) =>
     request.nextUrl.pathname.startsWith(path)
   );
+  const isOnboardingRoute = request.nextUrl.pathname.startsWith("/onboarding");
 
-  if (isProtectedRoute && !user) {
+  if ((isProtectedRoute || isOnboardingRoute) && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("redirect", request.nextUrl.pathname);
@@ -56,6 +57,29 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);
+  }
+
+  // Check onboarding status for authenticated users on relevant routes
+  if (user && (isProtectedRoute || isOnboardingRoute)) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("onboarding_completed")
+      .eq("id", user.id)
+      .single();
+
+    const onboardingCompleted = profile?.onboarding_completed ?? false;
+
+    if (isProtectedRoute && !onboardingCompleted) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/onboarding";
+      return NextResponse.redirect(url);
+    }
+
+    if (isOnboardingRoute && onboardingCompleted) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/dashboard";
+      return NextResponse.redirect(url);
+    }
   }
 
   return supabaseResponse;
