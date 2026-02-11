@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 
@@ -17,32 +16,23 @@ export default function DashboardLayout({
   xp,
   streak,
 }: DashboardLayoutProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-
   return (
-    <div className="flex h-screen bg-background-light dark:bg-background-dark">
+    <div className="min-h-screen bg-background-light">
       {/* Sidebar */}
-      <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+      <Sidebar />
 
-      {/* Main Content */}
-      <div
-        className={`flex-1 flex flex-col min-w-0 overflow-hidden transition-all duration-300 ${
-          isCollapsed ? "md:ml-20" : "md:ml-72"
-        }`}
-      >
-        {/* TopBar */}
-        <TopBar pageTitle={pageTitle} xp={xp} streak={streak} />
+      {/* TopBar */}
+      <TopBar pageTitle={pageTitle} xp={xp} streak={streak} />
 
-        {/* Page Content */}
-        <main className="flex-1 overflow-y-auto">
-          <div className="p-6 md:p-8">
-            {children}
-          </div>
-        </main>
+      {/* Page Content */}
+      <main>
+        <div className="max-w-[1200px] mx-auto w-full px-4 lg:px-10 py-8">
+          {children}
+        </div>
+      </main>
 
-        {/* Mobile Safe Area Padding for Bottom Navigation */}
-        <div className="md:hidden h-20" />
-      </div>
+      {/* Mobile Safe Area Padding for Bottom Navigation */}
+      <div className="lg:hidden h-24" />
     </div>
   );
 }
